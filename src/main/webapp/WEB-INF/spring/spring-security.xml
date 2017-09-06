@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:security="http://www.springframework.org/schema/security"
+       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+          http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+">
+    <security:http auto-config="true" use-expressions="true">
+        
+        <security:intercept-url pattern="/*" access="hasRole('ROLE_USER')" />
+        <security:intercept-url pattern="/index" access="hasRole('ROLE_USER')" />
+        <security:form-login username-parameter="j_username" 
+                             password-parameter="j_password" 
+                             login-processing-url="/j_spring_security_check"
+                             login-page="/login/" 
+                             default-target-url="/index/" 
+                             authentication-failure-url="/fail2login"
+        />
+        <security:logout logout-url="/logout" delete-cookies="JSESSIONID" invalidate-session="true" logout-success-url="/login/"/>
+<!--<security:csfr />                    -->
+    </security:http>
+    
+    <security:authentication-manager>
+        <security:authentication-provider>
+<!--            <security:user-service>
+                <security:user name="santos" password="kumar" authorities="ROLE_USER"/>
+            </security:user-service>-->
+            
+            <security:jdbc-user-service data-source-ref="dataSource" users-by-username-query="select username,password,active from users_login where username=?" authorities-by-username-query="select ue.username,r.authority from users_login as ue,users_roles as r where ue.uid=r.userid and username=?"/>
+            
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>

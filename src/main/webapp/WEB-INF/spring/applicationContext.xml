@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+">
+  <bean id="dataSource"
+    class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+    p:driverClassName="com.mysql.jdbc.Driver"
+    p:url="jdbc:mysql://localhost:3306/springdemo"
+    p:username="root"
+    p:password="" />
+
+    <bean id ="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.itn.model</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+            </props>
+        </property>
+    </bean>
+        <tx:annotation-driven/>
+        <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+            <property name="sessionFactory" ref="sessionFactory"></property>  
+            
+        </bean>
+    
+    <bean id="courseDao" class="com.itn.dao.CourseDao">
+<!--        <property name="sessionfactory" ref="sessionFactory"></property>-->
+    </bean>
+    <bean id="courseService" class="com.itn.service.CourseService">
+    </bean>
+<!--    <bean id="studentDao" class="com.itn.dao.StudentDao">
+
+    </bean>
+    <bean id="studentservice" class="com.itn.services.StudentServices">
+    </bean>   -->
+  
+
+</beans>
